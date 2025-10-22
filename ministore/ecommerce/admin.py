@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import PerfilUsuario, Producto
 
-# Register your models here.
+admin.site.register(PerfilUsuario)
+admin.site.register(Producto)

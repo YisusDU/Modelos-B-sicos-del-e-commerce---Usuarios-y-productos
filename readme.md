@@ -129,3 +129,121 @@ Aprovechando que estamos aquí, corremos el siguiente comando para que se genere
 ```
 python manage.py migrate
 ```
+
+## Codeando
+
+### Crear modelos en app ecommerce
+
+Tal como marca la actividad, crearemos los modelos básicos de productos y usuarios
+
+- \05-fourth-project\ministore\ecommerce\models.py
+
+```python
+from django.db import models
+from django.contrib.auth.models import User
+
+CATEGORY_CHOICES = [
+    ("GM", "GYM"),
+    ("LB", "LIBROS"),
+]
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=200)
+    descripcion = models.TextField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    imagen_link = models.URLField(null=True)
+    categoria = models.CharField(max_length=2,choices=CATEGORY_CHOICES)
+
+    def __str__(self):
+        return self.nombre
+  
+class PerfilUsuario(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.usuario.username
+
+```
+
+Tomé como referencia el frontend que anteriormente generamos:
+
+[Mini store](https://yisusdu.github.io/ebac-ea-third-proyect/home)
+
+### Registro en el admin
+
+Para poder administrar los usuarios desde el admin de Django, los registramos en el admin
+
+- \05-fourth-project\ministore\ecommerce\admin.py
+
+```python
+from django.contrib import admin
+from .models import PerfilUsuario, Producto
+
+admin.site.register(PerfilUsuario)
+admin.site.register(Producto)
+```
+
+### Registro en Django instaled apps
+
+Para que Django nos genere las migraciones de nuestra nueva app, es necesario registrarla en el archivo de settings
+
+- 53-web-scraping\05-fourth-project\ministore\ministore\settings.py
+
+```python
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "ecommerce"
+]
+```
+
+### Correr migraciones
+
+Con los modelos creados, corremos migraciones para aplicar
+
+- 05-fourth-project\ministore
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### Creando superuser
+
+Aprovechando que estamos en la consola, creamos un superusuario:
+
+- 05-fourth-project\ministore
+
+```
+python manage.py createsuperuser
+```
+
+## Probando Django admin
+
+Corremos el servidor para verificar la correcta visualización de los modelos
+
+- 05-fourth-project\ministore
+
+```
+python manage.py runserver
+```
+
+Ahora nos dirigimos al siguiente enlace y podemos ver la vista de django(login previos necesario)
+
+- http://127.0.0.1:8000/admin/
+
+![1761167235462](image/readme/1761167235462.png)
+
+He creado 2 usuarios, el admin con permisos de admin(desde la consola) y otro "común"
+
+![1761168780456](image/readme/1761168780456.png)
+
+Tambien cree algunos productos, planeo hacer un scraping, generar un JSON y con el cargar la DB 
+
+![1761168848512](image/readme/1761168848512.png)
+
+![1761168954278](image/readme/1761168954278.png)
